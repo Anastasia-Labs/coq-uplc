@@ -3,18 +3,27 @@
     opam-nix.url = "github:tweag/opam-nix";
     flake-utils.url = "github:numtide/flake-utils";
     nixpkgs.follows = "opam-nix/nixpkgs";
+    opam-repository = {
+      url = "github:ocaml/opam-repository";
+      flake = false;
+    };
+    opam-coq-archive = {
+      url = "github:coq/opam-coq-archive";
+      flake = false;
+    };
   };
-  outputs = { self, flake-utils, opam-nix, nixpkgs }@inputs:
+  outputs = { self, flake-utils, opam-nix, opam-repository, opam-coq-archive, nixpkgs }@inputs:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
         on = opam-nix.lib.${system};
+        repos = [ opam-repository ];
         localPackagesQuery = builtins.mapAttrs (_: pkgs.lib.last)
           (on.listRepo (on.makeOpamRepo ./.));
         devPackagesQuery = {
           # Developer environment
-          coq                   = "8.18.0";
-          vscoq-language-server = "2.0.3+coq8.18";
+          coq                   = "8.19.2";
+          vscoq-language-server = "2.1.7";
         };
         query = devPackagesQuery // {
           ## You can force versions of certain packages here, e.g:
@@ -25,7 +34,7 @@
           ## - or force ocamlfind to be a certain version:
           # ocamlfind = "1.9.2";
         };
-        scope = on.buildOpamProject' { } ./. query;
+        scope = on.buildOpamProject' { inherit repos; } ./. query;
         overlay = final: prev:
           {
             # You can add overrides here
@@ -40,10 +49,7 @@
       in {
         legacyPackages = scope';
 
-        inherit packages;
-
-        ## If you want to have a "default" package which will be built with just `nix build`, do this instead of `inherit packages;`:
-        # packages = packages // { default = packages.<your default package>; };
+        packages = packages // { default = packages.coq-uplc; };
 
         devShells.default = pkgs.mkShell {
           inputsFrom = builtins.attrValues packages;

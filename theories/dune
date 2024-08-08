@@ -1,0 +1,5 @@
+(coq.theory
+ (name CoqUplc)
+ (package coq-uplc)
+ ;  (synopsis <text>)
+ )

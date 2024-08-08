@@ -81,6 +81,22 @@
         "type": "github"
       }
     },
+    "opam-coq-archive": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1722897565,
+        "narHash": "sha256-bCgv4cjXNxUGHzFOym+sUjfKEUxa8MWQ+c7IlexnCoQ=",
+        "owner": "coq",
+        "repo": "opam-coq-archive",
+        "rev": "9198bb42c02d98eb0eb1a88d12630512d61dbd4a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "coq",
+        "repo": "opam-coq-archive",
+        "type": "github"
+      }
+    },
     "opam-nix": {
       "inputs": {
         "flake-compat": "flake-compat",
@@ -137,6 +153,22 @@
         "type": "github"
       }
     },
+    "opam-repository_2": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1723122221,
+        "narHash": "sha256-z/OcNBXmZ6/EiUxmEI5mT7VPcZf2gC6lWu2193F6gs4=",
+        "owner": "ocaml",
+        "repo": "opam-repository",
+        "rev": "13acffc3de9c22953d1e08bad3e56ee6e965eeed",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ocaml",
+        "repo": "opam-repository",
+        "type": "github"
+      }
+    },
     "opam2json": {
       "inputs": {
         "nixpkgs": [
@@ -165,7 +197,9 @@
           "opam-nix",
           "nixpkgs"
         ],
-        "opam-nix": "opam-nix"
+        "opam-coq-archive": "opam-coq-archive",
+        "opam-nix": "opam-nix",
+        "opam-repository": "opam-repository_2"
       }
     },
     "systems": {

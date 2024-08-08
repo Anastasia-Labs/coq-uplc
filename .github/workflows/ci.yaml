@@ -1,4 +1,4 @@
-name: Build and test
+name: Build
 
 on:
   - push
@@ -34,29 +34,29 @@ jobs:
           path: ~/.opam
           key: opam-root-${{ runner.os }}-ocaml-${{ matrix.ocaml-compiler }}-${{ hashFiles('flake.nix') }}
 
-      - name: Cache opam switch
-        id: cache-opam-packages
-        uses: actions/cache@v4
-        with:
-          path: switch-state.tar.gz
-          key: opam-cache-${{ runner.os }}-ocaml-${{ matrix.ocaml-compiler }}-${{ hashFiles('flake.nix') }}
+      # - name: Cache opam switch
+      #   id: cache-opam-packages
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: switch-state.tar.gz
+      #     key: opam-cache-${{ runner.os }}-ocaml-${{ matrix.ocaml-compiler }}-${{ hashFiles('flake.nix') }}
 
-      - name: Install cached opam packages
-        if: steps.cache-opam-packages.outputs.cache-hit == 'true'
-        run: |
-          opam init --disable-sandboxing -y
-          eval $(opam env)
-          opam switch create . --deps-only --locked -y || opam switch import switch-state.tar.gz
+      # - name: Install cached opam packages
+      #   if: steps.cache-opam-packages.outputs.cache-hit == 'true'
+      #   run: |
+      #     opam init --disable-sandboxing -y
+      #     eval $(opam env)
+      #     opam switch create . --deps-only --locked -y || opam switch import switch-state.tar.gz
       
-      - name: Install opam packages (uncached)
-        if: steps.cache-opam-packages.outputs.cache-hit != 'true'
+      - name: Install opam packages # (uncached)
+        # if: steps.cache-opam-packages.outputs.cache-hit != 'true'
         run: opam install coq dune
 
       - name: Dune build
         run: opam exec -- dune build
       
-      - name: Export opam switch
-        if: steps.opam-cache.outputs.cache-hit != 'true'
-        run: |
-          eval $(opam env)
-          opam switch export switch-state.tar.gz
+      # - name: Export opam switch
+      #   if: steps.opam-cache.outputs.cache-hit != 'true'
+      #   run: |
+      #     eval $(opam env)
+      #     opam switch export switch-state.tar.gz
