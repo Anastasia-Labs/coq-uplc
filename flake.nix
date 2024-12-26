@@ -22,8 +22,8 @@
           (on.listRepo (on.makeOpamRepo ./.));
         devPackagesQuery = {
           # Developer environment
-          coq                   = "8.19.2";
-          vscoq-language-server = "2.1.7";
+          coq                   = "*";
+          vscoq-language-server = "*";
         };
         query = devPackagesQuery // {
           ## You can force versions of certain packages here, e.g:
