@@ -4,21 +4,11 @@ From Coq Require Import Strings.String.
 From Coq Require Import ZArith.
 
 From CoqUplc Require Import Prelude.Show.
+From CoqUplc Require Import PlutusV3.BuiltinFunctions.Evaluate.
 From CoqUplc Require Import PlutusV3.Builtins.
                      Import BuiltinNotations.
+From CoqUplc Require Import PlutusV3.CekValue.
 From CoqUplc Require Import PlutusV3.Uplc.
-From CoqUplc Require Import PlutusV3.UplcShow.
-
-Inductive cekValue : Set :=
-  | VCon     : const                                              -> cekValue
-  | VDelay   :           term -> environment                      -> cekValue
-  | VLam     : string -> term -> environment                      -> cekValue
-  | VConstr  : nat        -> list cekValue                        -> cekValue
-  | VBuiltin : builtinFun -> list cekValue -> expectedBuiltinArgs -> cekValue
-
-with environment : Set :=
-  | NonEmptyEnvironment : environment -> string -> cekValue -> environment
-  | EmptyEnvironment    :                                      environment.
 
 Inductive frame : Set :=
   | ForceFrame              :                                                     frame
@@ -65,8 +55,10 @@ Definition unfold_case (s : stack) (i : nat) (Ms : list term) (Vs : list cekValu
   end.
 
 Definition eval_builtin (s : stack) (b : builtinFun) (Vs : list cekValue) : state :=
-  (* TODO: !!! implement me !!!*)
-  Error.
+  match evaluate_builtin_function b Vs with
+  | Some V => Return s V
+  | None   => Error
+  end.
 
 Module CekNotations.
   Declare Scope cek_scope.
@@ -172,8 +164,8 @@ Fixpoint applyParams (body : term) (params : list term) {struct params} : term :
 
 Definition initialState (t : term) : state := []; EmptyEnvironment ▷ t.
 
-Definition cekExecuteProgram (p : program) (params : list term) (n : nat) : state :=
+Definition cekExecuteProgram (p : program) (params : list term) (n : nat) : option state :=
   match p with
-  | Program (Version 1 1 0) body => runSteps (initialState (applyParams body (rev params))) n
-  | _                            => []; EmptyEnvironment ▷ u(error)
+  | Program (Version 1 1 0) body => Some (runSteps (initialState (applyParams body (rev params))) n)
+  | _                            => None
   end.
