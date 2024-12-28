@@ -34,4 +34,4 @@ jobs:
         run: opam install coq dune
 
       - name: Dune build
-        run: opam exec -- dune build
+        run: opam exec -- dune build --display=short --print-metrics
