@@ -16,7 +16,7 @@ Definition integer_subtraction : program :=
     (Apply (Apply (Builtin SubtractInteger) (Const (Integer 55%Z))) (Const (Integer 11%Z)))
   ).
 
-Theorem example1_correctly_interpreted : cekExecuteProgram integer_subtraction nil 10 = Some (Halt (VCon (Integer 44))).
+Theorem example1_correctly_interpreted : cek_execute_program integer_subtraction nil 10 = Some (Halt (VCon (Integer 44))).
 Proof.
   compute.
   reflexivity.
@@ -38,13 +38,13 @@ Definition integer_abs : program :=
     )
   ).
 
-Theorem example2_correctly_interpreted : cekExecuteProgram integer_abs [Const (Integer 5)] 37 = Some (Halt (VCon (Integer 5))).
+Theorem example2_correctly_interpreted : cek_execute_program integer_abs [Const (Integer 5)] 37 = Some (Halt (VCon (Integer 5))).
 Proof.
   compute.
   reflexivity.
 Qed.
 
-Theorem example2_correct : forall (i : Z), cekExecuteProgram integer_abs [Const (Integer i)] 37 = Some (Halt (VCon (Integer (Z.abs i)))).
+Theorem example2_correct : forall (i : Z), cek_execute_program integer_abs [Const (Integer i)] 37 = Some (Halt (VCon (Integer (Z.abs i)))).
 Proof.
   intros i.
   induction i; compute; reflexivity.
@@ -69,13 +69,13 @@ Definition integer_abs_lazy : program :=
     )
   ).
 
-Theorem example3_correctly_interpreted : cekExecuteProgram integer_abs_lazy [Const (Integer 5)] 34 = Some (Halt (VCon (Integer 5))).
+Theorem example3_correctly_interpreted : cek_execute_program integer_abs_lazy [Const (Integer 5)] 34 = Some (Halt (VCon (Integer 5))).
 Proof. 
   compute.
   reflexivity.
 Qed.
 
-Theorem example3_correct : forall (i : Z), cekExecuteProgram integer_abs_lazy [Const (Integer i)] 42 = Some (Halt (VCon (Integer (Z.abs i)))).
+Theorem example3_correct : forall (i : Z), cek_execute_program integer_abs_lazy [Const (Integer i)] 42 = Some (Halt (VCon (Integer (Z.abs i)))).
 Proof.
   intros i.
   induction i; compute; reflexivity.
@@ -99,8 +99,8 @@ Definition integer_abs_lazy_delays : program :=
     )
   ).
 
-Theorem example3_4_equivalence : forall (i : Z), cekExecuteProgram integer_abs_lazy_delays [Const (Integer i)] 42 =
-                                                 cekExecuteProgram integer_abs_lazy        [Const (Integer i)] 42.
+Theorem example3_4_equivalence : forall (i : Z), cek_execute_program integer_abs_lazy_delays [Const (Integer i)] 42 =
+                                                 cek_execute_program integer_abs_lazy        [Const (Integer i)] 42.
 Proof.
   intros i.
   induction i; compute; reflexivity.

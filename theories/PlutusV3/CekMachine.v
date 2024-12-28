@@ -148,24 +148,24 @@ Definition step (Σ : state) : state :=
   | _ => ◆
   end.
 
-Fixpoint runSteps (s : state) (n : nat) {struct n} : state :=
+Fixpoint run_steps (s : state) (n : nat) {struct n} : state :=
   match n, s with
   | _  , ▢ V => s
   | _  , ◆   => s
   | 0  , _    => s
-  | S p, _    => runSteps (step s) p
+  | S p, _    => run_steps (step s) p
   end.
 
-Fixpoint applyParams (body : term) (params : list term) {struct params} : term :=
+Fixpoint apply_params (body : term) (params : list term) {struct params} : term :=
   match params with
-  | h :: t => applyParams (Apply body h) t
+  | h :: t => apply_params (Apply body h) t
   | _      => body
   end.
 
-Definition initialState (t : term) : state := []; EmptyEnvironment ▷ t.
+Definition initial_state (t : term) : state := []; EmptyEnvironment ▷ t.
 
-Definition cekExecuteProgram (p : program) (params : list term) (n : nat) : option state :=
+Definition cek_execute_program (p : program) (params : list term) (n : nat) : option state :=
   match p with
-  | Program (Version 1 1 0) body => Some (runSteps (initialState (applyParams body (rev params))) n)
+  | Program (Version 1 1 0) body => Some (run_steps (initial_state (apply_params body (rev params))) n)
   | _                            => None
   end.
