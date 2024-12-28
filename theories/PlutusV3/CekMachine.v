@@ -90,12 +90,12 @@ Module CekNotations.
   Notation "'u' ( 'error' )"         := (Uplc.Error)  (at level 99) : cek_scope.
 
   (* Frame *)
-  Notation "'f' ( 'force' ⎯ )"                   := (ForceFrame)                   (at level 99) : cek_scope.
-  Notation "'f' [ ⎯ ( M , ρ ) ]"                 := (LeftApplicationToTerm M ρ)    (at level 99) : cek_scope.
-  Notation "'f' [ ⎯ V ]"                         := (LeftApplicationToValue V)     (at level 99) : cek_scope.
-  Notation "'f' [ V ⎯ ]"                         := (RightApplicationOfValue V)    (at level 99) : cek_scope.
-  Notation "'f' ( 'constr' i , V ⎯ ( Ms , ρ ) )" := (ConstructorArgument i V Ms ρ) (at level 99) : cek_scope.
-  Notation "'f' ( 'case' ⎯ ( M , ρ ) )"          := (CaseScrutinee M ρ)            (at level 99) : cek_scope.
+  Notation "'f' ( 'force' ⎵ )"                   := (ForceFrame)                   (at level 99) : cek_scope.
+  Notation "'f' [ ⎵ ( M , ρ ) ]"                 := (LeftApplicationToTerm M ρ)    (at level 99) : cek_scope.
+  Notation "'f' [ ⎵ V ]"                         := (LeftApplicationToValue V)     (at level 99) : cek_scope.
+  Notation "'f' [ V ⎵ ]"                         := (RightApplicationOfValue V)    (at level 99) : cek_scope.
+  Notation "'f' ( 'constr' i , V ⎵ ( Ms , ρ ) )" := (ConstructorArgument i V Ms ρ) (at level 99) : cek_scope.
+  Notation "'f' ( 'case' ⎵ ( M , ρ ) )"          := (CaseScrutinee M ρ)            (at level 99) : cek_scope.
 
   (* List *)
   Notation "x ⋅ xs"  := (x :: xs)    (at level 99) : cek_scope.
@@ -124,27 +124,27 @@ Definition step (Σ : state) : state :=
   |                               s; ρ ▷ u(con T c)                => s ◁ v⟨con T c⟩
   |                               s; ρ ▷ u(lam x, M)               => s ◁ v⟨lam x, M, ρ⟩
   |                               s; ρ ▷ u(delay M)                => s ◁ v⟨delay M, ρ⟩
-  |                               s; ρ ▷ u(force M)                =>  f(force ⎯) ⋅ s; ρ ▷ M
-  |                               s; ρ ▷ u[M ∘ N]                  => f[⎯ (N, ρ)] ⋅ s; ρ ▷ M
-  |                               s; ρ ▷ u(constr i, (M ⋅ Ms))     => f(constr i, [] ⎯ (Ms, ρ)) ⋅ s; ρ ▷ M
+  |                               s; ρ ▷ u(force M)                =>  f(force ⎵) ⋅ s; ρ ▷ M
+  |                               s; ρ ▷ u[M ∘ N]                  => f[⎵ (N, ρ)] ⋅ s; ρ ▷ M
+  |                               s; ρ ▷ u(constr i, (M ⋅ Ms))     => f(constr i, [] ⎵ (Ms, ρ)) ⋅ s; ρ ▷ M
   |                               s; ρ ▷ u(constr i, [])           => s ◁ v⟨constr i, []⟩
-  |                               s; ρ ▷ u(case N, Ms)             => f(case ⎯ (Ms, ρ)) ⋅ s; ρ ▷ N
+  |                               s; ρ ▷ u(case N, Ms)             => f(case ⎵ (Ms, ρ)) ⋅ s; ρ ▷ N
   |                               s; ρ ▷ u(builtin b)              => s ◁ v⟨builtin b, [], α(b)⟩
   |                               s; ρ ▷ u(error)                  => ◆
   |                                 [] ◁ V                         => ▢ V
-  |                    f[⎯ (M, ρ)] ⋅ s ◁ V                         => f[V ⎯] ⋅ s; ρ ▷ M
-  |            f[v⟨lam x, M, ρ⟩ ⎯] ⋅ s ◁ V                         => s; ρ⟦x ↦ V⟧ ▷ M
-  |                         f[⎯ V] ⋅ s ◁ v⟨lam x, M, ρ⟩            => s; ρ⟦x ↦ V⟧ ▷ M
-  |   f[v⟨builtin b, Vs, ι ⊙ η⟩ ⎯] ⋅ s ◁ V                         => (s ◁ v⟨builtin b, Vs :⋅ V, η⟩) if ι ∈ 𝓤 ∪ 𝓥
-  |                         f[⎯ V] ⋅ s ◁ v⟨builtin b, Vs, ι ⊙ η⟩   => (s ◁ v⟨builtin b, Vs :⋅ V, η⟩) if ι ∈ 𝓤 ∪ 𝓥
-  |    f[v⟨builtin b, Vs, a[ι]⟩ ⎯] ⋅ s ◁ V                         => (Eval_CEK(s, b, Vs :⋅ V)) if ι ∈ 𝓤 ∪ 𝓥
-  |                         f[⎯ V] ⋅ s ◁ v⟨builtin b, Vs, a[ι]⟩    => (Eval_CEK(s, b, Vs :⋅ V)) if ι ∈ 𝓤 ∪ 𝓥
-  |                     f(force ⎯) ⋅ s ◁ v⟨delay M, ρ⟩             => s; ρ ▷ M
-  |                     f(force ⎯) ⋅ s ◁ v⟨builtin b, Vs, ι ⊙ η⟩   => (s ◁ v⟨builtin b, Vs, η⟩) if ι ∈ 𝓠
-  |                     f(force ⎯) ⋅ s ◁ v⟨builtin b, Vs, a[ι]⟩    => (Eval_CEK(s, b, Vs)) if ι ∈ 𝓠
-  |  f(constr i, Vs ⎯ (M ⋅ Ms, ρ)) ⋅ s ◁ V                         => f(constr i, Vs :⋅ V ⎯ (Ms, ρ)) ⋅ s; ρ ▷ M
-  |      f(constr i, Vs ⎯ ([], ρ)) ⋅ s ◁ V                         => s ◁ v⟨constr i, Vs :⋅ V⟩
-  |              f(case ⎯ (Ms, ρ)) ⋅ s ◁ v⟨constr i, Vs⟩           => unfold_case s i Ms Vs ρ
+  |                    f[⎵ (M, ρ)] ⋅ s ◁ V                         => f[V ⎵] ⋅ s; ρ ▷ M
+  |            f[v⟨lam x, M, ρ⟩ ⎵] ⋅ s ◁ V                         => s; ρ⟦x ↦ V⟧ ▷ M
+  |                         f[⎵ V] ⋅ s ◁ v⟨lam x, M, ρ⟩            => s; ρ⟦x ↦ V⟧ ▷ M
+  |   f[v⟨builtin b, Vs, ι ⊙ η⟩ ⎵] ⋅ s ◁ V                         => (s ◁ v⟨builtin b, Vs :⋅ V, η⟩) if ι ∈ 𝓤 ∪ 𝓥
+  |                         f[⎵ V] ⋅ s ◁ v⟨builtin b, Vs, ι ⊙ η⟩   => (s ◁ v⟨builtin b, Vs :⋅ V, η⟩) if ι ∈ 𝓤 ∪ 𝓥
+  |    f[v⟨builtin b, Vs, a[ι]⟩ ⎵] ⋅ s ◁ V                         => (Eval_CEK(s, b, Vs :⋅ V)) if ι ∈ 𝓤 ∪ 𝓥
+  |                         f[⎵ V] ⋅ s ◁ v⟨builtin b, Vs, a[ι]⟩    => (Eval_CEK(s, b, Vs :⋅ V)) if ι ∈ 𝓤 ∪ 𝓥
+  |                     f(force ⎵) ⋅ s ◁ v⟨delay M, ρ⟩             => s; ρ ▷ M
+  |                     f(force ⎵) ⋅ s ◁ v⟨builtin b, Vs, ι ⊙ η⟩   => (s ◁ v⟨builtin b, Vs, η⟩) if ι ∈ 𝓠
+  |                     f(force ⎵) ⋅ s ◁ v⟨builtin b, Vs, a[ι]⟩    => (Eval_CEK(s, b, Vs)) if ι ∈ 𝓠
+  |  f(constr i, Vs ⎵ (M ⋅ Ms, ρ)) ⋅ s ◁ V                         => f(constr i, Vs :⋅ V ⎵ (Ms, ρ)) ⋅ s; ρ ▷ M
+  |      f(constr i, Vs ⎵ ([], ρ)) ⋅ s ◁ V                         => s ◁ v⟨constr i, Vs :⋅ V⟩
+  |              f(case ⎵ (Ms, ρ)) ⋅ s ◁ v⟨constr i, Vs⟩           => unfold_case s i Ms Vs ρ
   | _ => ◆
   end.
 
