@@ -1,3 +1,7 @@
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+![Build Status](https://github.com/Anastasia-Labs/coq-uplc/actions/workflows/ci.yaml/badge.svg?branch=main)
+
 # The `coq-uplc` Library
 
 The `coq-uplc` library provides a Coq-based implementation of the Cardano CEK machine—the virtual
