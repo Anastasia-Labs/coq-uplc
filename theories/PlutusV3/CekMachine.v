@@ -166,6 +166,6 @@ Definition initial_state (t : term) : state := []; EmptyEnvironment ▷ t.
 
 Definition cek_execute_program (p : program) (params : list term) (n : nat) : option state :=
   match p with
-  | Program (Version 1 1 0) body => Some (run_steps (initial_state (apply_params body (rev params))) n)
+  | Program (Version 1 1 0) body => Some (run_steps (initial_state (apply_params body params)) n)
   | _                            => None
   end.
