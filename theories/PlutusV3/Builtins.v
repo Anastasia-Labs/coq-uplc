@@ -1,7 +1,4 @@
-
 From CoqUplc Require Import PlutusV3.Uplc.
-
-Set Boolean Equality Schemes.
 
 Inductive expectedBuiltinArg : Set := ArgV | ArgQ.
 
@@ -73,7 +70,7 @@ Definition expected_args (b : builtinFun) : expectedBuiltinArgs :=
   | MkPairData                      => ArgV ⊙ One ArgV
   | MkNilData                       => One ArgV
   | MkNilPairData                   => One ArgV
-  | SerializeData                   => One ArgV
+  | SerialiseData                   => One ArgV
   | VerifyEcdsaSecp256k1Signature   => ArgV ⊙ ArgV ⊙ One ArgV
   | VerifySchnorrSecp256k1Signature => ArgV ⊙ ArgV ⊙ One ArgV
   | Bls12_381_G1_add                => ArgV ⊙ One ArgV
@@ -97,6 +94,19 @@ Definition expected_args (b : builtinFun) : expectedBuiltinArgs :=
   | Blake2b_224                     => ArgV ⊙ One ArgV
   | IntegerToByteString             => ArgV ⊙ ArgV ⊙ One ArgV
   | ByteStringToInteger             => ArgV ⊙ One ArgV
+  | AndByteString                   => ArgV ⊙ ArgV ⊙ One ArgV
+  | OrByteString                    => ArgV ⊙ ArgV ⊙ One ArgV
+  | XorByteString                   => ArgV ⊙ ArgV ⊙ One ArgV
+  | ComplementByteString            => One ArgV
+  | ShiftByteString                 => ArgV ⊙ One ArgV
+  | RotateByteString                => ArgV ⊙ One ArgV
+  | CountSetBits                    => One ArgV
+  | FindFirstSetBit                 => One ArgV
+  | ReadBit                         => ArgV ⊙ One ArgV
+  | WriteBits                       => ArgV ⊙ ArgV ⊙ One ArgV
+  | ReplicateByte                   => ArgV ⊙ One ArgV
+  | Ripemd_160                      => One ArgV
+  | ExpModInteger                   => ArgV ⊙ ArgV ⊙ One ArgV
   end.
 
 Module BuiltinNotations.

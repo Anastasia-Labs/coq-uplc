@@ -3,33 +3,21 @@ From Coq Require Import Init.Decimal.
 From Coq Require Import Strings.String.
 From Coq Require Import ZArith.
 
-Inductive atomicType : Set :=
-  | TypeInteger
-  | TypeByteString
-  | TypeString
-  | TypeBool
-  | TypeUnit
-  | TypeData.
-
-Inductive typeOperator : Set :=
-  | TypeList : builtinType -> typeOperator
-  | TypePair : builtinType -> typeOperator
-
-with builtinType : Set :=
-  | AtomicType   : atomicType   -> builtinType
-  | TypeOperator : typeOperator -> builtinType.
+From CoqUplc Require Import Unicode.String.
 
 Inductive data : Set :=
-  | DataConstr : nat -> list data   -> data
+  | DataConstr : Z   -> list data   -> data
   | Map        : list (data * data) -> data
   | DataList   : list data          -> data
   | I          : Z                  -> data
   | B          : string             -> data.
 
+Scheme Boolean Equality for data.
+
 Inductive const : Set :=
   | Integer              : Z              -> const
   | ByteString           : string         -> const
-  | String               : string         -> const
+  | ConstString          : unicodestring  -> const
   | Unit                 :                   const
   | Bool                 : bool           -> const
   | ConstList            : list const     -> const
@@ -46,9 +34,9 @@ Inductive builtinFun : Set :=
   | SubtractInteger
   | MultiplyInteger
   | DivideInteger
+  | ModInteger
   | QuotientInteger
   | RemainderInteger
-  | ModInteger
   | EqualsInteger
   | LessThanInteger
   | LessThanEqualsInteger
@@ -104,7 +92,7 @@ Inductive builtinFun : Set :=
   | MkNilData
   | MkNilPairData
   (* - Batch 2 *)
-  | SerializeData
+  | SerialiseData
   (* - Batch 3 *)
   | VerifyEcdsaSecp256k1Signature
   | VerifySchnorrSecp256k1Signature
@@ -131,27 +119,24 @@ Inductive builtinFun : Set :=
   | Keccak_256
   | Blake2b_224
   | IntegerToByteString
-  | ByteStringToInteger.
-
-  (* Not live yet
+  | ByteStringToInteger
   (* - Batch 5 *)
   (* -- ByteString *)
   | AndByteString
   | OrByteString
   | XorByteString
   | ComplementByteString
-  | ReadBit
-  | WriteBits
-  | ReplicateByte
   | ShiftByteString
   | RotateByteString
   | CountSetBits
   | FindFirstSetBit
+  | ReadBit
+  | WriteBits
+  | ReplicateByte
   (* -- Cryptography *)
   | Ripemd_160
   (* - Batch 6 *)
   | ExpModInteger.
-  *)
 
 Inductive term : Set :=
   | Var     : string            -> term
@@ -161,12 +146,12 @@ Inductive term : Set :=
   | Apply   : term     -> term  -> term
   | Delay   : term              -> term
   | Force   : term              -> term
-  | Constr  : nat  -> list term -> term
+  | Constr  : N    -> list term -> term
   | Case    : term -> list term -> term
   | Error   : term.
 
 Inductive version : Set :=
-  | Version : nat -> nat -> nat -> version.
+  | Version : N -> N -> N -> version.
 
 Inductive program : Set :=
   | Program : version -> term -> program.

@@ -3,7 +3,14 @@ From Coq Require Import Lists.List.
 From Coq Require Import Strings.String.
 From Coq Require Import ZArith.
 
+From CoqUplc Require Import Prelude.FunctionalNotations.
+From CoqUplc Require Import Prelude.List.
+From CoqUplc Require Import Prelude.Monad.
+                     Import MonadNotations.
 From CoqUplc Require Import Prelude.Show.
+From CoqUplc Require Import Unicode.String.
+From CoqUplc Require Import Unicode.StringShow.
+
 From CoqUplc Require Import PlutusV3.BuiltinFunctions.Evaluate.
 From CoqUplc Require Import PlutusV3.Builtins.
                      Import BuiltinNotations.
@@ -11,12 +18,12 @@ From CoqUplc Require Import PlutusV3.CekValue.
 From CoqUplc Require Import PlutusV3.Uplc.
 
 Inductive frame : Set :=
-  | ForceFrame              :                                                     frame
-  | LeftApplicationToTerm   : term -> environment                              -> frame
-  | LeftApplicationToValue  : cekValue                                         -> frame
-  | RightApplicationOfValue : cekValue                                         -> frame
-  | ConstructorArgument     : nat -> list cekValue -> list term -> environment -> frame
-  | CaseScrutinee           :                         list term -> environment -> frame.
+  | ForceFrame              :                                                   frame
+  | LeftApplicationToTerm   : term -> environment                            -> frame
+  | LeftApplicationToValue  : cekValue                                       -> frame
+  | RightApplicationOfValue : cekValue                                       -> frame
+  | ConstructorArgument     : N -> list cekValue -> list term -> environment -> frame
+  | CaseScrutinee           :                       list term -> environment -> frame.
 
 Notation stack := (list frame).
 
@@ -30,35 +37,40 @@ Fixpoint if_bound_otherwise_error (s : stack) (ρ : environment) (x : string) {s
   match ρ with
   | EmptyEnvironment            => Error
   | NonEmptyEnvironment ρ' x' V =>
-      if eqb x x'
+      if Strings.String.eqb x x'
         then Return s V
         else if_bound_otherwise_error s ρ' x
   end.
 
-Definition if_argV_otherwise_error (Σ : state) (ι : expectedBuiltinArg) : state :=
+Definition state_with_trace := writer (list unicodestring) state.
+
+Definition if_argV_otherwise_error (s : state_with_trace) (ι : expectedBuiltinArg) : state_with_trace :=
   match ι with
-  | ArgV => Σ
-  | ArgQ => Error
+  | ArgV => s
+  | ArgQ => mreturn Error
   end.
 
-Definition if_argQ_otherwise_error (Σ : state) (ι : expectedBuiltinArg) : state :=
+Definition if_argQ_otherwise_error (s : state_with_trace) (ι : expectedBuiltinArg) : state_with_trace :=
   match ι with
-  | ArgQ => Σ
-  | ArgV => Error
+  | ArgQ => s
+  | ArgV => mreturn Error
   end.
 
-Definition unfold_case (s : stack) (i : nat) (Ms : list term) (Vs : list cekValue) (ρ : environment) : state :=
-  match nth_error Ms i with
+Definition unfold_case (s : stack) (i : N) (Ms : list term) (Vs : list cekValue) (ρ : environment) : state :=
+  match nth_error Ms (N.to_nat i) with
   | Some m_i => let s_out := fold_left (fun s_j V => LeftApplicationToValue V :: s_j) Vs s in
                 Eval s_out ρ m_i
   | None     => Error
   end.
 
-Definition eval_builtin (s : stack) (b : builtinFun) (Vs : list cekValue) : state :=
-  match evaluate_builtin_function b Vs with
-  | Some V => Return s V
-  | None   => Error
-  end.
+Definition eval_builtin (s : stack) (b : builtinFun) (Vs : list cekValue) : state_with_trace :=
+  (
+    a <- evaluate_builtin_function b Vs ;;
+    match a with
+    | Some V => mreturn (Return s V)
+    | None   => mreturn Error
+    end
+  )%monad.
 
 Module CekNotations.
   Declare Scope cek_scope.
@@ -118,7 +130,10 @@ Local Open Scope builtin_scope.
 Import ExpectedArgNotations.
 Local Open Scope expectedArgs_scope.
 
-Definition step (Σ : state) : state :=
+Local Definition writer_state (s : state) : state_with_trace := mreturn s.
+Local Coercion writer_state : state >-> state_with_trace.
+
+Definition step (Σ : state) : state_with_trace :=
   match Σ with
   |                               s; ρ ▷ u(var x)                  => s ◁ ρ⟦x⟧ if x is bound in ρ
   |                               s; ρ ▷ u(con T c)                => s ◁ v⟨con T c⟩
@@ -148,12 +163,13 @@ Definition step (Σ : state) : state :=
   | _ => ◆
   end.
 
-Fixpoint run_steps (s : state) (n : nat) {struct n} : state :=
+
+Fixpoint run_steps (s : state_with_trace) (n : nat) {struct n} : state_with_trace :=
   match n, s with
-  | _  , ▢ V => s
-  | _  , ◆   => s
-  | 0  , _    => s
-  | S p, _    => run_steps (step s) p
+  | _  , Writer _ _ (▢ V) _ => s
+  | _  , Writer _ _ (◆)   _ => s
+  | 0  , _                   => s
+  | S p, _                   => mbind s (fun x => run_steps (step x) p)
   end.
 
 Fixpoint apply_params (body : term) (params : list term) {struct params} : term :=
@@ -162,10 +178,13 @@ Fixpoint apply_params (body : term) (params : list term) {struct params} : term 
   | _      => body
   end.
 
-Definition initial_state (t : term) : state := []; EmptyEnvironment ▷ t.
+Definition initial_state (t : term) : state_with_trace := Writer _ _ ([]; EmptyEnvironment ▷ t) [].
 
-Definition cek_execute_program (p : program) (params : list term) (n : nat) : option state :=
+Local Open Scope functional_scope.
+
+Definition cek_execute_program (p : program) (params : list term) (n : nat) : state * (list unicodestring) :=
   match p with
-  | Program (Version 1 1 0) body => Some (run_steps (initial_state (apply_params body params)) n)
-  | _                            => None
+  | Program (Version 1 1 0) body => let (final_state, trace) := run_steps (apply_params body params |> initial_state) n in
+                                    (final_state, trace)
+  | _                            => (Error, ["unknown program version"%unicode])
   end.

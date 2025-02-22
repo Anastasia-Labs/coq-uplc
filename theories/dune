@@ -2,6 +2,5 @@
 
 (coq.theory
  (name CoqUplc)
- (package coq-uplc)
- 
+ (package coq-uplc) 
 )

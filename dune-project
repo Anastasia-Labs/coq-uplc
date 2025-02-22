@@ -17,4 +17,4 @@
  (synopsis "Cardano CEK implementation in Coq")
  (depends coq)
  ; (description "")
- )
+)

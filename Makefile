@@ -15,7 +15,7 @@ shell:
 
 .PHONY: build
 build:
-	dune build
+	dune build --display=short
 
 .PHONY: clean
 clean:

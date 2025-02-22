@@ -2,23 +2,10 @@ From Coq  Require Import Strings.String.
 
 From CoqUplc Require Import Prelude.Show.
 From CoqUplc Require Import PlutusV3.Uplc.
+From CoqUplc Require Import Unicode.StringShow.
 
 Open Scope string_scope.
 
-#[export]
-Instance show_atomicType : Show atomicType := {
-  show t :=
-    match t with
-    | TypeInteger    => "TypeInteger"
-    | TypeByteString => "TypeByteString"
-    | TypeString     => "TypeString"
-    | TypeBool       => "TypeBool"
-    | TypeUnit       => "TypeUnit"
-    | TypeData       => "TypeData"
-    end
-}.
-
-#[export]
 Instance show_version : Show version := {
   show v :=
     let (n1, n2, n3) := v in "Version " ++ (show n1) ++ " " ++ (show n2) ++ " " ++ (show n3)
@@ -33,32 +20,29 @@ Fixpoint showData (d : data) : string :=
   | B          b    => "B " ++ b
   end.
 
-#[export]
 Instance show_data : Show data := {
   show := showData
 }.
 
 Fixpoint showConst (c : const) : string :=
   match c with
-  | Integer    x         => "Integer " ++ show x
-  | ByteString x         => "ByteString #" ++ x
-  | String     x         => "String """ ++ x ++ """"
-  | Unit                 => "Unit"
-  | Bool       x         => "Bool " ++ show x
-  | ConstList  xs        => "ConstList " ++ showList showConst xs
-  | Pair       x y       => "Pair (" ++ showConst x ++ ", " ++ showConst y ++ ")"
-  | Data       x         => "Data " ++ show x
-  | Bls12_381_G1_element => "Bls12_381_G1_element"
-  | Bls12_381_G2_element => "Bls12_381_G2_element"
-  | Bls12_381_MlResult   => "Bls12_381_MlResult"
+  | Integer     x         => "Integer " ++ show x
+  | ByteString  x         => "ByteString #" ++ x
+  | ConstString x         => "ConstString """ ++ show x ++ """"
+  | Unit                  => "Unit"
+  | Bool        x         => "Bool " ++ show x
+  | ConstList   xs        => "ConstList " ++ showList showConst xs
+  | Pair        x y       => "Pair (" ++ showConst x ++ ", " ++ showConst y ++ ")"
+  | Data        x         => "Data " ++ show x
+  | Bls12_381_G1_element  => "Bls12_381_G1_element"
+  | Bls12_381_G2_element  => "Bls12_381_G2_element"
+  | Bls12_381_MlResult    => "Bls12_381_MlResult"
   end.
 
-#[export]
 Instance show_const : Show const := {
   show := showConst
 }.
 
-#[export]
 Instance show_builtinFun : Show builtinFun := {
   show b :=
     match b with
@@ -113,7 +97,7 @@ Instance show_builtinFun : Show builtinFun := {
     | MkPairData                      => "MkPairData"
     | MkNilData                       => "MkNilData"
     | MkNilPairData                   => "MkNilPairData"
-    | SerializeData                   => "SerializeData"
+    | SerialiseData                   => "SerialiseData"
     | VerifyEcdsaSecp256k1Signature   => "VerifyEcdsaSecp256k1Signature"
     | VerifySchnorrSecp256k1Signature => "VerifySchnorrSecp256k1Signature"
     | Bls12_381_G1_add                => "Bls12_381_G1_add"
@@ -137,6 +121,19 @@ Instance show_builtinFun : Show builtinFun := {
     | Blake2b_224                     => "Blake2b_224"
     | IntegerToByteString             => "IntegerToByteString"
     | ByteStringToInteger             => "ByteStringToInteger"
+    | AndByteString                   => "AndByteString"
+    | OrByteString                    => "OrByteString"
+    | XorByteString                   => "XorByteString"
+    | ComplementByteString            => "ComplementByteString"
+    | ShiftByteString                 => "ShiftByteString"
+    | RotateByteString                => "RotateByteString"
+    | CountSetBits                    => "CountSetBits"
+    | FindFirstSetBit                 => "FindFirstSetBit"
+    | ReadBit                         => "ReadBit"
+    | WriteBits                       => "WriteBits"
+    | ReplicateByte                   => "ReplicateByte"
+    | Ripemd_160                      => "Ripemd_160"
+    | ExpModInteger                   => "ExpModInteger"
     end
 }.
 
@@ -154,12 +151,10 @@ Fixpoint showTerm (t : term) : string :=
   | Error                     => "Error"
   end.
 
-#[export]
 Instance show_term : Show term := {
   show := showTerm
 }.
 
-#[export]
 Instance show_program : Show program := {
   show p :=
     let (v, body) := p in "Program (" ++ show v ++ ") (" ++ show body ++ ")"
