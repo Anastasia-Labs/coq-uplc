@@ -10,7 +10,7 @@ From CoqUplc Require Import Prelude.Bytes.
 From CoqUplc Require Import Prelude.FunctionalNotations.
 From CoqUplc Require Import Prelude.Option.
 
-From CoqUplc Require Import PlutusV3.Uplc.
+From CoqUplc Require Import Uplc.Term.
 
 Local Open Scope bool_scope.
 Local Open Scope N_scope.

@@ -4,8 +4,8 @@ From Coq Require Import ZArith.
 
 From CoqUplc Require Import Prelude.FunctionalNotations.
 
-From CoqUplc Require Import PlutusV3.CekValue.
-From CoqUplc Require Import PlutusV3.Uplc.
+From CoqUplc Require Import Uplc.CekValue.
+From CoqUplc Require Import Uplc.Term.
 
 Local Open Scope Z_scope.
 Local Open Scope functional_scope.

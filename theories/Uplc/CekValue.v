@@ -3,9 +3,10 @@ From Coq Require Import ZArith.
 
 From CoqUplc Require Import Prelude.FunctionalNotations.
 
-From CoqUplc Require Import PlutusV3.Builtins.
-From CoqUplc Require Import PlutusV3.Uplc.
 From CoqUplc Require Import Unicode.String.
+
+From CoqUplc Require Import Uplc.Builtins.
+From CoqUplc Require Import Uplc.Term.
 
 Inductive cekValue : Set :=
   | VCon     : const                                              -> cekValue

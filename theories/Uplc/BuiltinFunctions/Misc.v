@@ -5,9 +5,10 @@ From CoqUplc Require Import Prelude.List.
 From CoqUplc Require Import Prelude.Monad.
                      Import MonadNotations.
 
-From CoqUplc Require Import PlutusV3.CekValue.
-From CoqUplc Require Import PlutusV3.Uplc.
 From CoqUplc Require Import Unicode.String.
+
+From CoqUplc Require Import Uplc.CekValue.
+From CoqUplc Require Import Uplc.Term.
 
 Definition chooseUnit (Vs : list cekValue) : option cekValue :=
    match Vs with

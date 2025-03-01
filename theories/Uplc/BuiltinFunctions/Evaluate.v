@@ -3,18 +3,19 @@ From CoqUplc Require Import Prelude.List.
 From CoqUplc Require Import Prelude.Monad.
                      Import MonadNotations.
 
-From CoqUplc Require Import PlutusV3.CekValue.
-From CoqUplc Require Import PlutusV3.Uplc.
 From CoqUplc Require Import Unicode.String.
 
-From CoqUplc Require Import PlutusV3.BuiltinFunctions.Bool.
-From CoqUplc Require Import PlutusV3.BuiltinFunctions.ByteString.
-From CoqUplc Require Import PlutusV3.BuiltinFunctions.Data.
-From CoqUplc Require Import PlutusV3.BuiltinFunctions.Integer.
-From CoqUplc Require Import PlutusV3.BuiltinFunctions.List.
-From CoqUplc Require Import PlutusV3.BuiltinFunctions.Misc.
-From CoqUplc Require Import PlutusV3.BuiltinFunctions.Pair.
-From CoqUplc Require Import PlutusV3.BuiltinFunctions.String.
+From CoqUplc Require Import Uplc.CekValue.
+From CoqUplc Require Import Uplc.Term.
+
+From CoqUplc Require Import Uplc.BuiltinFunctions.Bool.
+From CoqUplc Require Import Uplc.BuiltinFunctions.ByteString.
+From CoqUplc Require Import Uplc.BuiltinFunctions.Data.
+From CoqUplc Require Import Uplc.BuiltinFunctions.Integer.
+From CoqUplc Require Import Uplc.BuiltinFunctions.List.
+From CoqUplc Require Import Uplc.BuiltinFunctions.Misc.
+From CoqUplc Require Import Uplc.BuiltinFunctions.Pair.
+From CoqUplc Require Import Uplc.BuiltinFunctions.String.
 
 Local Open Scope functional_scope.
 

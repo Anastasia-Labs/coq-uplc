@@ -1,4 +1,4 @@
-From CoqUplc Require Import PlutusV3.Uplc.
+From CoqUplc Require Import Uplc.Term.
 
 Inductive expectedBuiltinArg : Set := ArgV | ArgQ.
 

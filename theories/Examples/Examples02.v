@@ -8,9 +8,9 @@ From Coq Require Import ZArith.
 From CoqUplc Require Import Unicode.String.
 From CoqUplc Require Import Unicode.StringShow.
 
-From CoqUplc Require Import PlutusV3.CekMachine.
-From CoqUplc Require Import PlutusV3.CekValue.
-From CoqUplc Require Import PlutusV3.Uplc.
+From CoqUplc Require Import Uplc.CekMachine.
+From CoqUplc Require Import Uplc.CekValue.
+From CoqUplc Require Import Uplc.Term.
 
 Local Open Scope string_scope.
 Local Open Scope Z_scope.

@@ -4,8 +4,8 @@ From Coq Require Import Lists.List.
 From CoqUplc Require Import Prelude.FunctionalNotations.
 
 From CoqUplc Require Import Cbor.Encoding.
-From CoqUplc Require Import PlutusV3.CekValue.
-From CoqUplc Require Import PlutusV3.Uplc.
+From CoqUplc Require Import Uplc.CekValue.
+From CoqUplc Require Import Uplc.Term.
 
 Local Open Scope functional_scope.
 

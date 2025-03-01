@@ -3,11 +3,11 @@ From Coq Require Import Lists.List.
 From Coq Require Import Strings.String.
 From Coq Require Import ZArith.
 
-From CoqUplc Require Import PlutusV3.Builtins.
+From CoqUplc Require Import Uplc.Builtins.
                      Import ExpectedArgNotations.
-From CoqUplc Require Import PlutusV3.CekMachine.
-From CoqUplc Require Import PlutusV3.CekValue.
-From CoqUplc Require Import PlutusV3.Uplc.
+From CoqUplc Require Import Uplc.CekMachine.
+From CoqUplc Require Import Uplc.CekValue.
+From CoqUplc Require Import Uplc.Term.
 
 Local Open Scope expectedArgs_scope.
 

@@ -11,11 +11,11 @@ From CoqUplc Require Import Prelude.Show.
 From CoqUplc Require Import Unicode.String.
 From CoqUplc Require Import Unicode.StringShow.
 
-From CoqUplc Require Import PlutusV3.BuiltinFunctions.Evaluate.
-From CoqUplc Require Import PlutusV3.Builtins.
+From CoqUplc Require Import Uplc.BuiltinFunctions.Evaluate.
+From CoqUplc Require Import Uplc.Builtins.
                      Import BuiltinNotations.
-From CoqUplc Require Import PlutusV3.CekValue.
-From CoqUplc Require Import PlutusV3.Uplc.
+From CoqUplc Require Import Uplc.CekValue.
+From CoqUplc Require Import Uplc.Term.
 
 Inductive frame : Set :=
   | ForceFrame              :                                                   frame
@@ -99,7 +99,7 @@ Module CekNotations.
   Notation "'u' ( 'constr' i , Ms )" := (Constr i Ms) (at level 99) : cek_scope.
   Notation "'u' ( 'case' N , Ms )"   := (Case N Ms)   (at level 99) : cek_scope.
   Notation "'u' ( 'builtin' b )"     := (Builtin b)   (at level 99) : cek_scope.
-  Notation "'u' ( 'error' )"         := (Uplc.Error)  (at level 99) : cek_scope.
+  Notation "'u' ( 'error' )"         := (Term.Error)  (at level 99) : cek_scope.
 
   (* Frame *)
   Notation "'f' ( 'force' ⎵ )"                   := (ForceFrame)                   (at level 99) : cek_scope.

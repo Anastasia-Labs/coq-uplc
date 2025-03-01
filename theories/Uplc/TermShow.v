@@ -1,8 +1,9 @@
 From Coq  Require Import Strings.String.
 
 From CoqUplc Require Import Prelude.Show.
-From CoqUplc Require Import PlutusV3.Uplc.
 From CoqUplc Require Import Unicode.StringShow.
+
+From CoqUplc Require Import Uplc.Term.
 
 Open Scope string_scope.
 

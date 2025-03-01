@@ -1,8 +1,8 @@
 From Coq Require Import Lists.List.
                  Import ListNotations.
 
-From CoqUplc Require Import PlutusV3.CekValue.
-From CoqUplc Require Import PlutusV3.Uplc.
+From CoqUplc Require Import Uplc.CekValue.
+From CoqUplc Require Import Uplc.Term.
 
 Definition ifThenElse (Vs : list cekValue) : option cekValue :=
    match Vs with
