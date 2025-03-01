@@ -1,6 +1,6 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-![Build Status](https://github.com/Anastasia-Labs/coq-uplc/actions/workflows/ci.yaml/badge.svg?branch=main)
+[![Build Status](https://github.com/Anastasia-Labs/coq-uplc/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/Anastasia-Labs/coq-uplc/actions)
 
 # The `coq-uplc` Library
 
